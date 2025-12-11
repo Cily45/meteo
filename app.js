@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
 elements.searchBtn.addEventListener('click', async (event) => {
     await handleSearch()
 })
+elements.notifyBtn.addEventListener('click', async (event) => {
+    await requestNotificationPermission()
+})
 // ===== Service Worker =====
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -101,6 +104,7 @@ async function requestNotificationPermission() {
     try {
         const permission = await Notification.requestPermission();
         updateNotifyButton();
+        console.log("test")
         
         if (permission === 'granted') {
             // Notification de test
@@ -229,6 +233,8 @@ function displayWeather(data, cityName) {
 
     elements.hourlyList.innerHTML = hourlyItems.join('');
     elements.weatherSection.classList.remove('hidden');
+
+    console.log(current)
 }
 
 function checkWeatherAlerts(data, cityName) {
