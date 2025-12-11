@@ -104,14 +104,13 @@ async function requestNotificationPermission() {
     try {
         const permission = await Notification.requestPermission();
         updateNotifyButton();
-        console.log("test")
-        
+
         if (permission === 'granted') {
             // Notification de test
             new Notification('MétéoPWA', {
                 body: 'Les notifications sont maintenant activées ! 🎉',
                 icon: 'icons/icon-192.png',
-                tag: 'welcome'
+                tag: 'welcome-meteo'
             });
         }
     } catch (error) {
