@@ -33,9 +33,14 @@ const elements = {
 let currentCity = null;
 
 // ===== Initialisation =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     updateNotifyButton();
-    registerServiceWorker();
+    await registerServiceWorker();
+    const favoriteCity = localStorage.getItem("meteo-pwa-favorites")
+    if (favoriteCity) {
+        elements.cityInput.value = favoriteCity;
+        await handleSearch()
+    }
 });
 
 elements.searchBtn.addEventListener('click', async (event) => {
@@ -44,6 +49,7 @@ elements.searchBtn.addEventListener('click', async (event) => {
 elements.notifyBtn.addEventListener('click', async (event) => {
     await requestNotificationPermission()
 })
+
 // ===== Service Worker =====
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -67,7 +73,7 @@ function updateNotifyButton() {
         elements.notifyBtn.disabled = true;
         return;
     }
-    
+
     if (!('Notification' in window)) {
         elements.notifyBtn.textContent = '🔔 Notifications non supportées';
         elements.notifyBtn.disabled = true;
@@ -75,7 +81,7 @@ function updateNotifyButton() {
     }
 
     const permission = Notification.permission;
-    
+
     if (permission === 'granted') {
         elements.notifyBtn.textContent = '✅ Notifications activées';
         elements.notifyBtn.classList.add('granted');
@@ -119,8 +125,9 @@ async function requestNotificationPermission() {
 }
 
 function sendWeatherNotification(city, message, type = 'info') {
-  
+
 }
+
 // ===== Recherche et API Météo =====
 async function handleSearch() {
     const query = elements.cityInput.value.trim();
@@ -137,21 +144,25 @@ async function handleSearch() {
         const geoResponse = await fetch(
             `${CONFIG.GEOCODING_API}?name=${encodeURIComponent(query)}&count=1&language=fr&format=json`
         );
-        
+
         if (!geoResponse.ok) throw new Error('Erreur de géocodage');
-        
+
         const geoData = await geoResponse.json();
-        
+
         if (!geoData.results || geoData.results.length === 0) {
             throw new Error(`Ville "${query}" non trouvée. Vérifiez l'orthographe.`);
         }
 
         const location = geoData.results[0];
         const cityName = `${location.name}${location.admin1 ? ', ' + location.admin1 : ''}, ${location.country}`;
-        
+
         // 2. Récupérer la météo
         await fetchWeather(location.latitude, location.longitude, cityName);
-        
+
+        elements.favoriteBtn.addEventListener('click', async (event) => {
+            localStorage.setItem("meteo-pwa-favorites", `${location.name}`);
+        })
+
     } catch (error) {
         hideLoading();
         showError(error.message);
@@ -173,18 +184,18 @@ async function fetchWeather(lat, lon, cityName) {
         if (!weatherResponse.ok) throw new Error('Erreur lors de la récupération des données météo');
 
         const weatherData = await weatherResponse.json();
-        
+
         // Sauvegarder la ville courante
-        currentCity = { name: cityName, lat, lon };
-        
+        currentCity = {name: cityName, lat, lon};
+
         // Afficher les résultats
         displayWeather(weatherData, cityName);
-        
+
         // Vérifier les alertes pour les 4 prochaines heures
         checkWeatherAlerts(weatherData, cityName);
-        
+
         hideLoading();
-        
+
     } catch (error) {
         hideLoading();
         showError(error.message);
@@ -206,7 +217,7 @@ function displayWeather(data, cityName) {
     // Prévisions horaires (4 prochaines heures)
     const currentHour = new Date().getHours();
     const hourlyItems = [];
-    
+
     for (let i = 0; i < 4; i++) {
         const hourIndex = currentHour + i + 1;
         if (hourIndex < hourly.time.length) {
@@ -215,7 +226,7 @@ function displayWeather(data, cityName) {
             const code = hourly.weather_code[hourIndex];
             const isRain = CONFIG.RAIN_CODES.includes(code);
             const isHighTemp = temp > CONFIG.TEMP_THRESHOLD;
-            
+
             let alertClass = '';
             if (isRain) alertClass = 'rain-alert';
             else if (isHighTemp) alertClass = 'temp-alert';
@@ -239,7 +250,7 @@ function displayWeather(data, cityName) {
 function checkWeatherAlerts(data, cityName) {
     const hourly = data.hourly;
     const currentHour = new Date().getHours();
-    
+
     let rainAlert = false;
     let tempAlert = false;
     let rainHour = null;
@@ -251,13 +262,13 @@ function checkWeatherAlerts(data, cityName) {
         if (hourIndex < hourly.time.length) {
             const code = hourly.weather_code[hourIndex];
             const temp = hourly.temperature_2m[hourIndex];
-            
+
             // Vérifier la pluie
             if (!rainAlert && CONFIG.RAIN_CODES.includes(code)) {
                 rainAlert = true;
                 rainHour = i;
             }
-            
+
             // Vérifier la température > 10°C
             if (!tempAlert && temp > CONFIG.TEMP_THRESHOLD) {
                 tempAlert = true;
@@ -316,7 +327,7 @@ function getWeatherEmoji(code) {
         96: '⛈️',     // Thunderstorm with slight hail
         99: '⛈️'      // Thunderstorm with heavy hail
     };
-    
+
     return weatherEmojis[code] || '🌤️';
 }
 

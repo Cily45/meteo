@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Meteo</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json"/>
 </head>
 <body>
 
@@ -18,17 +18,22 @@
 <button id="notify-btn"></button>
 
 <p id="theme-toggle"></p>
-<p id="weather-section"></p>
-<p id="favorites-section"></p>
-<p id="favorites-list"></p>
-<p id="favorite-btn"></p>
-<p id="city-name"></p>
-<p id="temperature"></p>
-<p id="weather-icon"></p>
-<p id="wind"></p>
-<p id="humidity"></p>
-<p id="feels-like"></p>
+<p id="weather-section">
+<div class="weather-container">
+    <p id="city-name"></p>
+    <p id="temperature"></p>
+    <p id="weather-icon"></p>
+    <p id="wind"></p>
+    <p id="humidity"></p>
+    <p id="feels-like"></p>
+</div>
 <p id="hourly-list"></p>
+<div id="favorites-section">
+    <div id="favorites-list"></div>
+    <button id="favorite-btn">Ajout favori</button>
+</div>
+
+
 <p id="loading"></p>
 <p id="error-message"></p>
 <script type="module" src="app.js"></script>
