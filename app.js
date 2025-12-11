@@ -10,7 +10,7 @@ const CONFIG = {
 
 // ===== Éléments DOM =====
 const elements = {
-    cityInput: document.getElementById('city-input'),
+    cityInput: document.getElementById('search-input'),
     searchBtn: document.getElementById('search-btn'),
     notifyBtn: document.getElementById('notify-btn'),
     themeToggle: document.getElementById('theme-toggle'),
@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     registerServiceWorker();
 });
 
+elements.searchBtn.addEventListener('click', async (event) => {
+    await handleSearch()
+})
 // ===== Service Worker =====
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -118,7 +121,6 @@ function sendWeatherNotification(city, message, type = 'info') {
 // ===== Recherche et API Météo =====
 async function handleSearch() {
     const query = elements.cityInput.value.trim();
-    
     if (!query) {
         showError('Veuillez entrer un nom de ville.');
         return;
