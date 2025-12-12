@@ -208,10 +208,10 @@ function displayWeather(data, cityName) {
 
     // Données actuelles
     elements.cityName.textContent = cityName;
-    elements.temperature.textContent = Math.round(current.temperature_2m);
+    elements.temperature.textContent = `🌡️${Math.round(current.temperature_2m)}°C`;
     elements.weatherIcon.textContent = getWeatherEmoji(current.weather_code);
-    elements.wind.textContent = `${Math.round(current.wind_speed_10m)} km/h`;
-    elements.humidity.textContent = `${current.relative_humidity_2m} %`;
+    elements.wind.textContent = `💨${Math.round(current.wind_speed_10m)} km/h`;
+    elements.humidity.textContent = `💧${current.relative_humidity_2m} %`;
     elements.feelsLike.textContent = `${Math.round(current.apparent_temperature)}°C`;
 
     // Prévisions horaires (4 prochaines heures)

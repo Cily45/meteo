@@ -5,38 +5,47 @@
     <title>Meteo</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json"/>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
 </head>
 <body>
+<div class="w-screen h-screen flex flex-col items-center space-y-8 mt-8">
+    <div class="flex justify-center items-center border border-sky-300 rounded-xl">
+        <input id="search-input" class="p-2 focus:border focus:rounded-xl focus:rounded-r-none" type="text" name=""
+               placeholder="Entrez le nom d'une ville">
+        <button id="search-btn" class="bg-sky-300 text-white rounded-l-none p-2 border rounded-xl" type="submit">
+            Recherche
+        </button>
+    </div>
 
-<div class="input-group">
-    <input id="search-input" class="input" type="text" name="" placeholder="Entrez le nom d'une ville">
-    <button id="search-btn" class="button--submit" type="submit">
-        Recherche
-    </button>
+    <button id="notify-btn" class="p-2 bg-gray-300 rounded-xl"></button>
+
+    <p id="theme-toggle"></p>
+    <p id="weather-section">
+    <div class="weather-container">
+        <p id="city-name"></p>
+        <div class="flex justify-around items-center">
+            <p id="temperature"></p>
+            <p id="weather-icon"></p>
+            <p id="wind"></p>
+            <p id="humidity"></p>
+
+        </div>
+        <div>
+            Température ressenti
+            <p id="feels-like"></p>
+        </div>
+    </div>
+    <div id="hourly-list" class="flex w-full justify-around items-center"></div>
+    <div id="favorites-section">
+        <div id="favorites-list"></div>
+        <button id="favorite-btn" class="p-2 bg-gray-300 rounded-xl">Ajout favori</button>
+    </div>
+
+
+    <p id="loading"></p>
+    <p id="error-message"></p>
+    <script type="module" src="app.js"></script>
 </div>
-
-<button id="notify-btn"></button>
-
-<p id="theme-toggle"></p>
-<p id="weather-section">
-<div class="weather-container">
-    <p id="city-name"></p>
-    <p id="temperature"></p>
-    <p id="weather-icon"></p>
-    <p id="wind"></p>
-    <p id="humidity"></p>
-    <p id="feels-like"></p>
-</div>
-<p id="hourly-list"></p>
-<div id="favorites-section">
-    <div id="favorites-list"></div>
-    <button id="favorite-btn">Ajout favori</button>
-</div>
-
-
-<p id="loading"></p>
-<p id="error-message"></p>
-<script type="module" src="app.js"></script>
-
 </body>
 </html>
